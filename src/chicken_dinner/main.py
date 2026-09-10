@@ -10,6 +10,11 @@ about my current Python level and my understanding of the language.
 """
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from fastapi.exceptions import HTTPException
+from .models.models import WinnerCollection
+from .datautils.datautils import pick_winners, load_csv
 
 app = FastAPI()
 
@@ -17,3 +22,21 @@ app = FastAPI()
 CORS = {}
 
 # Main entrypoint
+
+@app.get("/")
+async def root_get():
+    return { "message": "Winner, winner! Chicken Dinner!" }
+
+@app.get("/results")
+async def get_results():
+    df = load_csv("../../results.csv")
+    df_winners = pick_winners(df)
+
+    df_formatted = df_winners.rename(columns={
+        "Kod": "name",
+        "Growth": "percent",
+        "Kurs_end": "latest"
+    })
+
+    winners_list = df_formatted.to_dict(orient="records")
+    return WinnerCollection(winners=winners_list)
