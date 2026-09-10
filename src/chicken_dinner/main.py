@@ -17,3 +17,17 @@ app = FastAPI()
 CORS = {}
 
 # Main entrypoint
+
+@app.get("/")
+async def root_get():
+    return { "message": "" }
+
+@app.get("/results")
+async def get_all_results():
+    '''Returns sorted stocks in descending order'''
+    pass
+
+
+@app.get("/results/{id}")
+async def get_specific_result(id):
+    pass
