@@ -10,6 +10,8 @@ about my current Python level and my understanding of the language.
 """
 
 from fastapi import FastAPI
+from chicken_dinner.models.models import WinnerCollection
+from chicken_dinner.datautils.datautils import pick_winners
 
 app = FastAPI()
 
@@ -20,9 +22,9 @@ CORS = {}
 
 @app.get("/")
 async def root_get():
-    return { "message": "" }
+    return { "message": "Winner, winner! Chicken Dinner!" }
 
-@app.get("/results")
+@app.get("/results", response_model=WinnerCollection)
 async def get_all_results():
     '''Returns sorted stocks in descending order'''
     pass
