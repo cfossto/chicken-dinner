@@ -1,5 +1,7 @@
 # Winner, Winner, Chicken dinner!
 
+[![Build](https://github.com/cfossto/chicken-dinner/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/cfossto/chicken-dinner/actions/workflows/build.yml)
+
 <img width="2816" height="1536" alt="chickendinner" src="https://github.com/user-attachments/assets/f9f51da3-efdb-4515-8fbb-e9a8862e1c74" />
 
 
@@ -15,9 +17,7 @@ This project utilize:
 - Pandas for file loading and manipulating data
 - Pydantic for validation
 - Pytest for testing
-
-- Bonus: raw http client for base lib showoff
-- Bonus: raw validation examples for base lib showoff
+- Jupyter notebook for data discovery
 
 ## Setup
 
@@ -84,10 +84,13 @@ The API will be available at `http://localhost:8000`. Stop it with:
 docker compose down
 ```
 
-# Important note
-While this application mainly use FastAPI for the web layer,
-I am providing an example of how to create an endpoint with
-a more barebone entrypoint with Python HTTP.
+## Data discovery
+
+`stocktests.ipynb` is the Jupyter notebook I used to explore `results.csv`
+before writing any application code: grouping stocks by day, working out how
+to find each stock's closing price per day, and prototyping the growth and
+ranking calculations. It's kept in the repo as a record of how the logic in
+`datautils.py` evolved, not as something meant to be run as part of the app.
 
 ## About AI use
 The application code (`src/`) is entirely my own — no AI coding was used to
