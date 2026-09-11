@@ -9,6 +9,9 @@ While LLMs are a part of a modern dev stack, this is more for showcase
 about my current Python level and my understanding of the language.
 """
 
+import os
+from pathlib import Path
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import HTTPException
@@ -16,6 +19,15 @@ from .models.models import WinnerCollection
 from .datautils.datautils import pick_winners, load_csv
 
 app = FastAPI()
+
+# The results CSV lives at the repo root. Resolve it relative to this file
+# so it works regardless of the process's working directory; overridable via
+# RESULTS_CSV_PATH for deployments or tests that need a different dataset.
+DEFAULT_RESULTS_CSV = Path(__file__).resolve().parent.parent.parent / "results.csv"
+
+
+def get_results_csv_path() -> str:
+    return os.environ.get("RESULTS_CSV_PATH", str(DEFAULT_RESULTS_CSV))
 
 # Define allowed origins and methods
 origins = ["http://localhost:8000","http://localhost"]
@@ -38,7 +50,7 @@ async def root_get():
 @app.get("/results")
 async def get_results():
     try:
-        df = load_csv("../../results.csv")
+        df = load_csv(get_results_csv_path())
     except FileNotFoundError:
         raise HTTPException(status_code=500, detail="Can't locate local stock file. Contact Admin.")
     except ValueError:
