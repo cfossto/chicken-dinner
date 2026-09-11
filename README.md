@@ -1,5 +1,7 @@
 # Winner, Winner, Chicken dinner!
 
+[![Build](https://github.com/cfossto/chicken-dinner/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/cfossto/chicken-dinner/actions/workflows/build.yml)
+
 <img width="2816" height="1536" alt="chickendinner" src="https://github.com/user-attachments/assets/f9f51da3-efdb-4515-8fbb-e9a8862e1c74" />
 
 
