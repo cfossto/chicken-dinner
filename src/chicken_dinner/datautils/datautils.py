@@ -27,9 +27,13 @@ def load_csv(path_to_file: str) -> pd.DataFrame:
 
     path = Path(path_to_file)
     if not path.exists():
-        raise FileNotFoundError(f"File does not exist:  {path_to_file}")
+        raise FileNotFoundError(f"File does not exist: {path_to_file}")
+    try:
+        df = pd.read_csv(path_to_file, delimiter=';', on_bad_lines="error")
+        return df
+    except pd.errors.ParserError:
+        raise ValueError(f"CSV is corrupt: {path_to_file}")
 
-    return pd.read_csv(path_to_file, delimiter=';')
 
 def _find_last_stock_per_day(df: pd.DataFrame) -> pd.DataFrame:
     """Finds latest stock per day at 'closing time' per day"""
