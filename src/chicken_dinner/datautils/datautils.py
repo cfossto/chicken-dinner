@@ -8,17 +8,26 @@ internal csv package for reading and/or writing. I would probably have
 made Pydantic types, dataclasses or pure objects from scratch.
 
 But for this project Pandas is fine.
+
+As you can see, we are keeping the DataFrame format in order to
+save bandwidth from having to reformat and transform at every run.
+Reasoning was that it is better to transform the CSV to a DataFrame
+and let functions manipulate that DataFrame through the whole process.
+It is only transformed to its endstate when it needs to have a specific format (like JSON or Dict).
+That way - manipulation of data is coherent and transformation only depends
+on the desired output.
 """
 
 import pandas as pd
-from os import path
+from pathlib import Path
 
 
 def load_csv(path_to_file: str) -> pd.DataFrame:
     """Loads CSV file at specified path and delivers a Pandas Dataframe"""
 
-    if not path.exists(path_to_file):
-        raise FileNotFoundError("File does not exist.")
+    path = Path(path_to_file)
+    if not path.exists():
+        raise FileNotFoundError(f"File does not exist:  {path_to_file}")
 
     return pd.read_csv(path_to_file, delimiter=';')
 
@@ -45,12 +54,17 @@ def _extract_stock_growth(df: pd.DataFrame) -> pd.DataFrame:
     ).reset_index()
     return merged
 
-
-def pick_winners(df: pd.DataFrame) -> pd.DataFrame:
-    """Creates Winner entries"""
-
+def extract_and_rank_stocks(df: pd.DataFrame) -> pd.DataFrame:
+    """Extracts stocks and their growth from a Pandas DataFrame with stocks. Returns sorted and ranked stocks."""
     df = _extract_stock_growth(df)
     df_sorted = df.sort_values("Growth", ascending=False).reset_index(drop=True)
     df_sorted["rank"] = df_sorted.index + 1
+    return df_sorted
+
+
+def pick_winners(df: pd.DataFrame) -> pd.DataFrame:
+    """Creates Winner entries and filters out loser stocks."""
+    df_sorted = extract_and_rank_stocks(df)
+    df_sorted = df_sorted[df_sorted["Growth"] >=0] # Filter out loser stocks
 
     return df_sorted
