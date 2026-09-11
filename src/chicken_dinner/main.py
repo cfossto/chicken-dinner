@@ -11,6 +11,7 @@ about my current Python level and my understanding of the language.
 
 import os
 from pathlib import Path
+from typing import Dict
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -43,12 +44,13 @@ app.add_middleware(
 # Main entrypoint
 
 @app.get("/")
-async def root_get():
+async def root_get() -> Dict[str, str]:
     """We just return a simple response on the Root. Better to have semantics involved from start."""
     return { "message": "Winner, winner! Chicken Dinner!" }
 
 @app.get("/results")
-async def get_results():
+async def get_results() -> WinnerCollection:
+    """Gets winner results from dataset provided by the Backend."""
     try:
         df = load_csv(get_results_csv_path())
     except FileNotFoundError:
