@@ -29,7 +29,10 @@ async def root_get():
 
 @app.get("/results")
 async def get_results():
-    df = load_csv("../../results.csv")
+    try:
+        df = load_csv("../../results.csv")
+    except FileNotFoundError:
+        raise HTTPException(status_code=500, detail="Can't locate local stock file. Contact Admin.")
     df_winners = pick_winners(df)
 
     df_formatted = df_winners.rename(columns={
