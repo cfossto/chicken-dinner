@@ -15,6 +15,8 @@ This project utilize:
 - Pandas for file loading and manipulating data
 - Pydantic for validation
 - Pytest for testing
+- Jupyter notebook for data discovery
+
 
 - Bonus: raw http client for base lib showoff
 - Bonus: raw validation examples for base lib showoff
@@ -83,6 +85,14 @@ The API will be available at `http://localhost:8000`. Stop it with:
 ```bash
 docker compose down
 ```
+
+## Data discovery
+
+`stocktests.ipynb` is the Jupyter notebook I used to explore `results.csv`
+before writing any application code: grouping stocks by day, working out how
+to find each stock's closing price per day, and prototyping the growth and
+ranking calculations. It's kept in the repo as a record of how the logic in
+`datautils.py` evolved, not as something meant to be run as part of the app.
 
 # Important note
 While this application mainly use FastAPI for the web layer,
