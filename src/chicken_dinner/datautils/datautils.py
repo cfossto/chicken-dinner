@@ -39,7 +39,8 @@ def _find_last_stock_per_day(df: pd.DataFrame) -> pd.DataFrame:
     """Finds latest stock per day at 'closing time' per day"""
 
     df = df.sort_values("Date") # Sorting by date and time
-    df['Date'] = df['Date'].astype(str).str[:10] # Makes date unique, not time. Later: Exclude last by date.
+    pd.to_datetime(df['Date'], format="mixed")
+    print(df)
     df = df.groupby(["Kod", "Date"]).last().reset_index() # Here: Last by date.
     return df
 
