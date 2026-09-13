@@ -58,6 +58,22 @@ def test_results_exact_data_match(monkeypatch):
     }
 
 
+def test_results_matches_customer_specified_output():
+    """Customer-facing contract: the shipped results.csv must produce this
+    exact winners payload. Uses the default (production) RESULTS_CSV_PATH,
+    not the test fixture, since this pins the real dataset's output."""
+    response = client.get("/results")
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "winners": [
+            {"rank": 1, "name": "AddLife B", "percent": 40.74, "latest": 38},
+            {"rank": 2, "name": "NCC", "percent": 1.68, "latest": 121},
+            {"rank": 3, "name": "ABB", "percent": 1.37, "latest": 222},
+        ]
+    }
+
+
 def test_results_missing_file_returns_500(monkeypatch):
     monkeypatch.setenv("RESULTS_CSV_PATH", str(FIXTURE_CSV.parent / "does-not-exist.csv"))
 
