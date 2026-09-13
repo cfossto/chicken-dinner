@@ -17,7 +17,7 @@ This project utilize:
 - Pandas for file loading and manipulating data
 - Pydantic for validation
 - Pytest for testing
-- Jupyter notebook for data discovery
+- Jupyter notebook for data discovery (Can be found in the "discovery" folder at project root level.)
 
 ## Setup
 
@@ -61,9 +61,13 @@ The suite in `tests/` is split into two layers:
   fixtures under `tests/fixtures/`, independent of the real `results.csv`,
   so they stay meaningful even as the production dataset changes.
 - `tests/test_winners.py` — integration tests that exercise the real
-  FastAPI app via `TestClient`, hitting `/` and `/results`. Each test points
+  FastAPI app via `TestClient`, hitting `/` and `/results`. Most tests point
   the app at a fixture CSV via the `RESULTS_CSV_PATH` env var, covering both
-  the happy path and the missing-file error path.
+  the happy path and the missing-file error path. One test,
+  `test_results_matches_customer_specified_output`, deliberately runs
+  against the real `results.csv` (no fixture override) and asserts the
+  exact winners payload the customer specified — a contract test that fails
+  if the production dataset or ranking logic ever drifts from that output.
 
 ```bash
 uv run pytest
@@ -86,7 +90,7 @@ docker compose down
 
 ## Data discovery
 
-`stocktests.ipynb` is the Jupyter notebook I used to explore `results.csv`
+`discovery/stocktests.ipynb` is the Jupyter notebook I used to explore `results.csv`
 before writing any application code: grouping stocks by day, working out how
 to find each stock's closing price per day, and prototyping the growth and
 ranking calculations. It's kept in the repo as a record of how the logic in
