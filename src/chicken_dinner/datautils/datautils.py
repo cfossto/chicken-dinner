@@ -37,9 +37,10 @@ def load_csv(path_to_file: str) -> pd.DataFrame:
 
 def _find_last_stock_per_day(df: pd.DataFrame) -> pd.DataFrame:
     """Finds latest stock per day at 'closing time' per day"""
-    df = df.sort_values("Date") # Sorting by date and time
-    pd.to_datetime(df['Date'], format="mixed")
-    df = df.groupby(["Kod", "Date"]).last().reset_index() # Here: Last by date.
+    df['Date'] = df['Date'] = pd.to_datetime(df['Date'], format="mixed")
+    df = df.sort_values("Date")  # Sorting by date and time
+    df["_Day"] = df["Date"].dt.date
+    df = df.groupby(["Kod", "_Day"]).last().reset_index()
     return df
 
 def _extract_stock_growth(df: pd.DataFrame) -> pd.DataFrame:
