@@ -18,3 +18,10 @@ class RawData:
     Date: datetime
     Kod: str
     Kurs: float
+
+@dataclass
+class FlattenedWinners:
+    first: datetime
+    last: datetime
+    first_top: int
+    latest_top: int
