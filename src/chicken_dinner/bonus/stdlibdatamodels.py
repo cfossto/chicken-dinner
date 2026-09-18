@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import List
+from typing import List, Dict
 
 @dataclass
 class WinnerEntries:
@@ -25,3 +25,7 @@ class FlattenedWinners:
     last: datetime
     first_top: int
     latest_top: int
+
+@dataclass
+class WinnerPairs:
+    pairs: List[List[Dict]]
