@@ -19,8 +19,9 @@ DEFAULT_RESULTS_CSV = Path(__file__).resolve().parent.parent.parent / "results.c
 def get_results_csv_path() -> str:
     return os.environ.get("RESULTS_CSV_PATH", str(DEFAULT_RESULTS_CSV))
 
+
 # Define allowed origins and methods
-origins = ["http://localhost:8000","http://localhost"]
+origins = ["http://localhost:8000", "http://localhost"]
 methods = ["GET"]
 
 # Define middlewares + CORS
@@ -32,10 +33,12 @@ app.add_middleware(
 
 # Main entrypoint
 
+
 @app.get("/")
 async def root_get() -> Dict[str, str]:
     """We just return a simple response on the Root. Better to have semantics involved from start."""
-    return { "message": "Winner, winner! Chicken Dinner!" }
+    return {"message": "Winner, winner! Chicken Dinner!"}
+
 
 @app.get("/results")
 async def get_results() -> WinnerCollection:
@@ -48,11 +51,9 @@ async def get_results() -> WinnerCollection:
         raise HTTPException(status_code=500, detail="Corrupt CSV file.")
 
     df_winners = pick_winners(df)
-    df_formatted = df_winners.rename(columns={
-        "Kod": "name",
-        "Growth": "percent",
-        "Kurs_end": "latest"
-    })
+    df_formatted = df_winners.rename(
+        columns={"Kod": "name", "Growth": "percent", "Kurs_end": "latest"}
+    )
 
     winners_list = df_formatted.to_dict(orient="records")
     return WinnerCollection(winners=winners_list)

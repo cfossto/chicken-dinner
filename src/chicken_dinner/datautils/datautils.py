@@ -29,7 +29,7 @@ def load_csv(path_to_file: str) -> pd.DataFrame:
     if not path.exists():
         raise FileNotFoundError(f"File does not exist: {path_to_file}")
     try:
-        df = pd.read_csv(path_to_file, delimiter=';', on_bad_lines="error")
+        df = pd.read_csv(path_to_file, delimiter=";", on_bad_lines="error")
         return df
     except pd.errors.ParserError:
         raise ValueError(f"CSV is corrupt: {path_to_file}")
@@ -43,20 +43,26 @@ def _find_last_stock_per_day(df: pd.DataFrame) -> pd.DataFrame:
     df = df.groupby(["Kod", "_Day"]).last().reset_index()
     return df
 
+
 def _extract_stock_growth(df: pd.DataFrame) -> pd.DataFrame:
     """Extracts stock growth at 'closing time' per day and creates a new DataFrame
     with aggregate of flat row of data per Kod"""
 
     last_stocks = _find_last_stock_per_day(df)
-    last_stocks["Growth"] = (last_stocks.groupby(["Kod"])["Kurs"].pct_change()*100).round(2)
-    merged = last_stocks.groupby("Kod").agg(
-        Date_start=('Date', 'first'),
-        Kurs_start=('Kurs', 'first'),
-        Date_end=('Date', 'last'),
-        Kurs_end=('Kurs', 'last'),
-        Growth=('Growth', 'last')
-    ).reset_index()
+    last_stocks["Growth"] = (last_stocks.groupby(["Kod"])["Kurs"].pct_change() * 100).round(2)
+    merged = (
+        last_stocks.groupby("Kod")
+        .agg(
+            Date_start=("Date", "first"),
+            Kurs_start=("Kurs", "first"),
+            Date_end=("Date", "last"),
+            Kurs_end=("Kurs", "last"),
+            Growth=("Growth", "last"),
+        )
+        .reset_index()
+    )
     return merged
+
 
 def extract_and_rank_stocks(df: pd.DataFrame) -> pd.DataFrame:
     """Extracts stocks and their growth from a Pandas DataFrame with stocks. Returns sorted and ranked stocks."""
@@ -69,6 +75,6 @@ def extract_and_rank_stocks(df: pd.DataFrame) -> pd.DataFrame:
 def pick_winners(df: pd.DataFrame) -> pd.DataFrame:
     """Creates Winner entries and filters out loser stocks."""
     df_sorted = extract_and_rank_stocks(df)
-    df_sorted = df_sorted[df_sorted["Growth"] >=0] # Filter out loser stocks
+    df_sorted = df_sorted[df_sorted["Growth"] >= 0]  # Filter out loser stocks
 
     return df_sorted
